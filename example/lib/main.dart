@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:io';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_chargebee/flutter_chargebee.dart';
 
 void main() {
@@ -16,35 +15,68 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _flutterChargebeePlugin = FlutterChargebee();
+  final _chargebeePlugin = FlutterChargebee();
+
+  bool isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+
+    init();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterChargebeePlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  Future<void> init() async {
+    await _chargebeePlugin.configure(
+      site: 'TODO: Enter site name',
+      apiKey: 'TODO: Enter publishable api key',
+      androidSdkKey: 'TODO: Enter android sdk key, e.g. cb-4jte...',
+      iosSdkKey: 'TODO: Enter the ios sdk key, e.g. cb-ehcj...',
+    );
 
     setState(() {
-      _platformVersion = platformVersion;
+      isInitialized = true;
     });
+  }
+
+  Future<void> retrieveProductIDs() async {
+    final productIds = await _chargebeePlugin.retrieveProductIDs(limit: 100);
+    debugPrint('retrieveProductIDs() done. $productIds');
+  }
+
+  Future<void> retrieveProducts() async {
+    if (Platform.isAndroid) {
+      final products = await _chargebeePlugin.retrieveProductsPlaystore(
+        productIds: ["TODO: Enter product id"],
+      );
+      for (final product in products) {
+        debugPrint('Found product: ${product.productTitle}');
+      }
+    } else if (Platform.isIOS) {
+      final products = await _chargebeePlugin.retrieveProductsAppstore(
+        productIds: ["TODO: Enter product id"],
+      );
+      for (final product in products) {
+        debugPrint('Found product: ${product.localizedTitle}');
+      }
+    } else {
+      throw UnsupportedError(
+        "Unsupported platform: ${Platform.operatingSystem}",
+      );
+    }
+    debugPrint('retrieveProducts() done.');
+  }
+
+  Future<void> purchaseProduct() async {
+    final productIds = await _chargebeePlugin.retrieveProductIDs();
+
+    final result = await _chargebeePlugin.purchaseProduct(
+      customerID: 'TODO: Enter your customer ID',
+      productId: productIds.first,
+    );
+    debugPrint(
+      'purchaseProduct() done. subscription id: ${result.subscriptionId}, status: ${result.status}',
+    );
   }
 
   @override
@@ -52,11 +84,46 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Chargebee plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Show initialization status
+            isInitialized
+                ? const Text('configure() done.')
+                : const Text('not initialized.'),
+
+            ElevatedButton(
+              child: const Text('configure()'),
+              onPressed: () {
+                init();
+              },
+            ),
+
+            ElevatedButton(
+              child: const Text('retrieveProductIDs()'),
+              onPressed: () {
+                retrieveProductIDs();
+              },
+            ),
+
+            ElevatedButton(
+              child: const Text('retrieveProducts()'),
+              onPressed: () {
+                retrieveProducts();
+              },
+            ),
+
+            ElevatedButton(
+              child: const Text('purchaseProduct'),
+              onPressed: () {
+                purchaseProduct();
+              },
+            ),
+          ],
+        )),
       ),
     );
   }

@@ -1,16 +1,18 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_chargebee/flutter_chargebee_method_channel.dart';
+// import 'package:flutter_chargebee/flutter_chargebee_method_channel.dart';
 
+/// This file just demonstrates how to create tests, but since this
+/// plugin just wraps the native sdks, there's nothing to test.
 void main() {
-  MethodChannelFlutterChargebee platform = MethodChannelFlutterChargebee();
+  // MethodChannelFlutterChargebee platform = MethodChannelFlutterChargebee();
   const MethodChannel channel = MethodChannel('flutter_chargebee');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
+      // Some mock implementation
     });
   });
 
@@ -18,7 +20,7 @@ void main() {
     channel.setMockMethodCallHandler(null);
   });
 
-  test('getPlatformVersion', () async {
-    expect(await platform.getPlatformVersion(), '42');
-  });
+  // test('retrieveProductIDs', () async {
+  //   expect(await platform.retrieveProductIDs(), ['some_id']);
+  // });
 }
