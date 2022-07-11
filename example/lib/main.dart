@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _chargebeePlugin = FlutterChargebee();
+  final _chargebeePlugin = FlutterChargebee.instance;
 
   bool isInitialized = false;
 

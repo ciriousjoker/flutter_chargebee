@@ -5,6 +5,16 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'flutter_chargebee_platform_interface.dart';
 
 class FlutterChargebee {
+  FlutterChargebee._();
+
+  static FlutterChargebee? _instance;
+
+  /// The instance of the [FlutterChargebee] to use.
+  static FlutterChargebee get instance {
+    _instance ??= FlutterChargebee._();
+    return _instance!;
+  }
+
   /// Configure the app details with chargebee system.
   Future<void> configure({
     required String site,
