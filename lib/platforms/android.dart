@@ -1,3 +1,5 @@
+import 'package:deep_pick/deep_pick.dart';
+
 class CBProduct {
   final bool subStatus;
   final String productId;
@@ -15,11 +17,11 @@ class CBProduct {
 
   factory CBProduct.fromMap(Map<String, dynamic> map) {
     return CBProduct(
-      productId: map['productId'],
-      productPrice: map['productPrice'],
-      productTitle: map['productTitle'],
-      skuDetailsJson: map['skuDetails'],
-      subStatus: map['subStatus'],
+      productId: pick(map, "productId").asStringOrThrow(),
+      productPrice: pick(map, "productPrice").asStringOrThrow(),
+      productTitle: pick(map, "productTitle").asStringOrThrow(),
+      skuDetailsJson: pick(map, "skuDetails").asStringOrThrow(),
+      subStatus: pick(map, "subStatus").asBoolOrThrow(),
     );
   }
 }

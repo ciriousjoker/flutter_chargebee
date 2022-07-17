@@ -1,8 +1,7 @@
+import 'package:flutter_chargebee/flutter_chargebee_method_channel.dart';
 import 'package:flutter_chargebee/platforms/android.dart';
 import 'package:flutter_chargebee/platforms/ios.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import 'flutter_chargebee_method_channel.dart';
 
 abstract class FlutterChargebeePlatform extends PlatformInterface {
   /// Constructs a ChargebeePlatform.

@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chargebee/flutter_chargebee_platform_interface.dart';
 import 'package:flutter_chargebee/platforms/android.dart';
 import 'package:flutter_chargebee/platforms/ios.dart';
-
-import 'flutter_chargebee_platform_interface.dart';
 
 /// An implementation of [FlutterChargebeePlatform] that uses method channels.
 class MethodChannelFlutterChargebee extends FlutterChargebeePlatform {

@@ -15,8 +15,8 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Chargebee'
-  s.platform = :ios, '11.2'
+  s.dependency 'Chargebee', '1.0.9'
+  s.platform = :ios, '12'
   
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
