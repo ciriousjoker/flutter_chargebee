@@ -1,8 +1,8 @@
+import 'package:deep_pick/deep_pick.dart';
+import 'package:flutter_chargebee/flutter_chargebee_platform_interface.dart';
 import 'package:flutter_chargebee/platforms/android.dart';
 import 'package:flutter_chargebee/platforms/ios.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import 'flutter_chargebee_platform_interface.dart';
 
 class FlutterChargebee {
   FlutterChargebee._();
@@ -10,6 +10,7 @@ class FlutterChargebee {
   static FlutterChargebee? _instance;
 
   /// The instance of the [FlutterChargebee] to use.
+  // ignore: prefer_constructors_over_static_methods
   static FlutterChargebee get instance {
     _instance ??= FlutterChargebee._();
     return _instance!;
@@ -70,14 +71,14 @@ class FlutterChargebee {
       productId: productId,
     );
     return ChargebeePurchaseResult(
-      subscriptionId: result['subscriptionId'],
-      status: result['status'],
+      subscriptionId: pick(result, "subscriptionId").asStringOrNull(),
+      status: pick(result, "status").asBoolOrThrow(),
     );
   }
 }
 
 class ChargebeePurchaseResult {
-  final String subscriptionId;
+  final String? subscriptionId;
   final bool status;
 
   ChargebeePurchaseResult({

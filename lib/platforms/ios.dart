@@ -1,3 +1,5 @@
+import 'package:deep_pick/deep_pick.dart';
+
 /// A simplified version of an Appstore product
 /// This thing is not 100% complete, complete it as necessary.
 class AppStoreProduct {
@@ -11,7 +13,7 @@ class AppStoreProduct {
   final double price;
   final bool isDownloadable;
   final String priceLocale;
-  final SubscriptionPeriod subscriptionPeriod;
+  final SubscriptionPeriod? subscriptionPeriod;
 
   AppStoreProduct({
     required this.localizedDescription,
@@ -28,26 +30,30 @@ class AppStoreProduct {
   });
 
   factory AppStoreProduct.fromMap(Map<String, dynamic> map) {
+    final subscriptionPeriodData =
+        pick(map, "subscriptionPeriod").asMapOrNull<String, dynamic>();
+
     return AppStoreProduct(
-      localizedDescription: map['localizedDescription'],
-      contentVersion: map['contentVersion'],
-      downloadContentVersion: map['downloadContentVersion'],
-      localizedTitle: map['localizedTitle'],
-      productIdentifier: map['productIdentifier'],
-      debugDescription: map['debugDescription'],
-      description: map['description'],
-      price: map['price'],
-      isDownloadable: map['isDownloadable'],
-      priceLocale: map['priceLocale'],
-      subscriptionPeriod: SubscriptionPeriod.fromMap(
-        Map<String, dynamic>.from(map['subscriptionPeriod']),
-      ),
+      localizedDescription: pick(map, "localizedDescription").asStringOrThrow(),
+      contentVersion: pick(map, "contentVersion").asStringOrThrow(),
+      downloadContentVersion:
+          pick(map, "downloadContentVersion").asStringOrThrow(),
+      localizedTitle: pick(map, "localizedTitle").asStringOrThrow(),
+      productIdentifier: pick(map, "productIdentifier").asStringOrThrow(),
+      debugDescription: pick(map, "debugDescription").asStringOrThrow(),
+      description: pick(map, "description").asStringOrThrow(),
+      price: pick(map, "price").asDoubleOrThrow(),
+      isDownloadable: pick(map, "isDownloadable").asBoolOrThrow(),
+      priceLocale: pick(map, "priceLocale").asStringOrThrow(),
+      subscriptionPeriod: subscriptionPeriodData != null
+          ? SubscriptionPeriod.fromMap(subscriptionPeriodData)
+          : null,
     );
   }
 }
 
 class SubscriptionPeriod {
-  final String unit;
+  final String? unit;
   final int numberOfUnits;
 
   SubscriptionPeriod({
@@ -57,8 +63,8 @@ class SubscriptionPeriod {
 
   factory SubscriptionPeriod.fromMap(Map<String, dynamic> map) {
     return SubscriptionPeriod(
-      unit: map['unit'],
-      numberOfUnits: map['numberOfUnits'],
+      unit: pick(map, "unit").asStringOrNull(),
+      numberOfUnits: pick(map, "numberOfUnits").asIntOrThrow(),
     );
   }
 }
