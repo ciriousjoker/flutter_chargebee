@@ -82,6 +82,11 @@ public class SwiftFlutterChargebeePlugin: NSObject, FlutterPlugin {
         let productId = args.string("productId")!;
         let customerId = args.string("customerID")!;
         
+        // We can only report an error once. If we try to report twice, the app will probably crash.
+        // For some reason, this always happens when I start and cancel the purchase dialog twice on Android,
+        // so we add the same logic to iOS just to be on the safe side.
+        var hasReportedError = false;
+
         CBPurchase.shared.retrieveProducts(
             withProductID: [productId],
             completion: { chargebeeResult in
@@ -98,13 +103,19 @@ public class SwiftFlutterChargebeePlugin: NSObject, FlutterPlugin {
                                     "subscriptionId": subscription.subscriptionId as Any,
                                 ]);
                             case .failure(let error):
-                                self.sendError(result, error)
+                                if(!hasReportedError) {
+                                    self.sendError(result, error)
+                                    hasReportedError = true;
+                                }
                                 break;
                             }
                         }
                     break;
                 case let .failure(error):
-                    self.sendError(result, error)
+                    if(!hasReportedError) {
+                        self.sendError(result, error)
+                        hasReportedError = true;
+                    }
                     break;
                 }
             });
