@@ -115,7 +115,7 @@ class FlutterChargebeePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
                             // For now the easiest way is to just pass the json string.
                             // If these details are ever needed, we can parse it into a map.
-                            "skuDetails" to details.skuDetails.originalJson,
+                            "skuDetails" to "TODO, but not worth it: details.skuDetails.originalJson",
                         )
                     }
 
@@ -131,6 +131,10 @@ class FlutterChargebeePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private fun purchaseProduct(@NonNull call: MethodCall, @NonNull result: Result) {
         val customerID = call.argument<String>("customerID")!!
+
+        // We can only report an error once. If we try to report twice, the app will crash.
+        // For some reason, this always happens when I start and cancel the purchase dialog twice.
+        var hasReportedError = false;
 
         CBPurchase.retrieveProducts(
             this.activity!!, arrayListOf(call.argument<String>("productId")!!),
@@ -160,14 +164,16 @@ class FlutterChargebeePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                             }
 
                             override fun onError(error: CBException) {
-                                sendError(result, error)
+                                if (!hasReportedError) sendError(result, error)
+                                hasReportedError = true
                             }
                         }
                     )
                 }
 
                 override fun onError(error: CBException) {
-                    sendError(result, error)
+                    if (!hasReportedError) sendError(result, error)
+                    hasReportedError = true
                 }
             }
         )
