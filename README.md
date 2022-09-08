@@ -1,15 +1,5 @@
 # flutter_chargebee
 
-A new Flutter plugin project.
-
-## Getting Started
-
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+This is a wrapper around Chargebee's mobile sdks.
+Currently, the android sdk is unusable because of a billingclient version mismatch
+, so this fixes it. If this is not an issue, use the official flutter sdk instead.
